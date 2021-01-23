@@ -1,0 +1,68 @@
+<nav id="navbar" class="navbar has-shadow">
+    {{! <div class="container"> }}
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="/image/jasons-tees-logo.png" alt="Jason's Tees">
+            </a>
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenuTShirts">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <!--START NAVMENUTSHIRTS-->
+        <div id="navMenuTShirts" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item is-hidden-tablet" onclick="app.showPage('myDesignsPageId');">
+                    <span class="icon has-text-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </span>
+                    <span>
+                        <strong>This app looks a lot better on desktop.</strong>
+                    </span>
+                    <span class="icon has-text-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </span>
+                </a>
+                {{>menu/designs}}        
+                {{>menu/active-listings}}
+                {{>menu/inventory}}
+                {{>menu/research}}
+                {{>menu/reorder}}
+                {{>menu/about}}
+            </div>
+            <div class="navbar-end">
+                {{^isLoggedIn}}
+                <div class="navbar-item">
+                    Demo Mode
+                </div>
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button" href="login">
+                            <strong>Sign In</strong>
+                        </a>
+                        <a class="button is-info" href="login">
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </div>
+                {{/isLoggedIn}}
+                {{#isLoggedIn}}
+                <div class="navbar-item">
+                    Hello {{userinfo.given_name}}!
+                </div>
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <form method="POST" action="/logout">
+                            <button class="button">
+                                Log Out
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {{/isLoggedIn}}
+            </div>
+        </div>
+        <!--END NAVMENUTSHIRTS-->
+    {{! </div> }}
+</nav>

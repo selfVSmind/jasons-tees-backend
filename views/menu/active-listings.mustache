@@ -1,0 +1,31 @@
+<div class="navbar-item has-dropdown is-hoverable">
+    <a class="navbar-link" onclick="document.getElementById('activeDropdown').classList.toggle('is-hidden-touch');">
+        <span class="icon has-text-info">
+            <i class="fas fa-store-alt"></i>
+        </span>
+        <span class="is-hidden-desktop-only">
+            Active Listings
+        </span>
+    </a>
+    <div id="activeDropdown" class="navbar-dropdown is-hidden-touch">
+        <a class="navbar-item" onclick="app.showPage('activeEbay')" href="https://www.ebay.com/sh/lst/active" target="_blank">
+            <span>
+                <span class="icon has-text-info">
+                    <i class="fab fa-ebay fa-2x"></i>
+                </span>
+                <br>
+                Listings currently active on <strong>eBay</strong>.
+            </span>
+        </a>
+        <hr class="navbar-divider">
+        <a class="navbar-item" onclick="app.showPage('activeEtsy')">
+            <span>
+                <span class="icon has-text-info">
+                    <i class="fab fa-etsy fa-2x"></i>
+                </span>
+                <br>
+                Listings currently active on <strong>Etsy</strong>.
+            </span>
+        </a>
+    </div>
+</div>

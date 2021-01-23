@@ -1,0 +1,42 @@
+@media only screen and (min-width: 800px) {
+    .navbar-item img {
+        max-height: 4rem;
+        margin-right: 2em;
+    }
+    .navbar {
+        padding: 5px;
+    }
+}
+
+.rounded-picture {
+    border-radius: 5px;
+}
+
+.shirtPics:hover {
+    cursor: pointer;
+    
+    -moz-box-shadow: 0 0 10px #ccc;
+    -webkit-box-shadow: 0 0 10px #ccc;
+    box-shadow: 0 0 10px #ccc;
+    
+    -webkit-filter: brightness(95%);
+    -webkit-transition: all .03s ease-in-out;
+    -moz-transition: all .03s ease-in-out;
+    -o-transition: all .03s ease-in-out;
+    -ms-transition: all .03s ease-in-out;
+    transition: all .03s ease-in-out;
+}
+
+.myLoader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

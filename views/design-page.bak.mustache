@@ -1,0 +1,58 @@
+<div class="container is-widescreen notification is-info">
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+        <div class="tile is-child box">
+            <p class="image">
+            <label for="keyGraphicFileInput">
+                <img id="keyGraphic" value="noperz" class="shirtPics" src="image/whiteBlank.jpg">
+            </label>
+            <input type="file" style"display:none;" id="keyGraphicFileInput" onChange="app.uploadz('keyGraphic', '', this)" />
+            <img id="keyGraphicPlaceHolder" class="is-hidden" src="image/whiteBlank.jpg">
+            </p>
+        </div>
+        </div>
+        <div class="tile is-parent is-9">
+        <div class="tile is-child box">
+            <label class="label">Name of this fancy little t-shirt design.</label>
+            <div class="field">
+            <div class="control is-expanded">
+                <input id="mainDesignNameId" class="input" type="text" placeholder="Design Name For My Records" maxlength="80" />
+            </div>
+            <div class="control is-expanded has-icons-right">
+                <input id="mainDesignNameEbayId" class="input" type="text" placeholder="Ebay Listing Name" maxlength="80" />
+                <span class="icon is-small is-right">
+                    <i class="fab fa-ebay"></i>
+                </span>
+            </div>
+            <div class="control is-expanded has-icons-right">
+                <input id="mainDesignNameEtsyId" class="input" type="text" placeholder="Etsy Listing Name" maxlength="140" />
+                <span class="icon is-small is-right">
+                    <i class="fab fa-etsy"></i>
+                </span>
+            </div>
+            <div class="control is-expanded">
+                <input id="mainDesignThemeId" class="input" type="text" placeholder="Super Cool Theme"/>
+            </div>
+            </div>
+            <div class="field">
+            <!-- <label class="label">Gender</label> -->
+            <p class="control has-icons-left">
+                <span class="select is-danger">
+                <select id="genderSelector" onChange="app.newGender(this);">
+                    <option value="sample">Choose Demographic</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+<!--                               <option value="youth">Youth</option>
+                    <option value="toddler">Toddler</option>
+                    <option value="infant">Infant</option>
+-->                            </select>
+                </span>
+                <span class="icon is-small is-left">
+                <i class="fas fa-transgender"></i>
+                </span>
+            </p>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

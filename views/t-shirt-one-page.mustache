@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    {{>head}}
+    <body class="">
+        {{>menu/main}}
+<!--CREATE NEW TSHIRT DESIGN PAGE CONTENT IS HERE-->
+        <div id="createShirtPageId" class="is-hidden">
+<!--MAIN PART OF PAGE-->
+          <div id="parentNode" class="section">
+            {{>design-page}}
+<!--ADD VARIANT-->
+            <div id="addVariant" class="container is-widescreen">
+              <p class="control">
+                <a class="button is-pulled-right is-info" onClick="app.addVariant()">
+                  <span class="icon">
+                    <i class="fas fa-plus"></i>
+                  </span>
+                  <strong>Variant</strong>
+                </a>
+              </p>
+            </div>
+<!--END OF ADD VARIANT        -->
+          </div>
+<!--END OF MAIN PART OF PAGE-->
+        </div>
+<!--CREATE NEW TSHIRT DESIGN PAGE CONTENT ENDS HERE-->
+
+
+
+<!--MY TSHIRT DESIGNS PAGE-->
+          <div id="appDesignsPage" class="section is-hidden">
+<!--DYNAMIC DATA GOES HERE YO-->
+          </div>
+<!--MY TSHIRT DESIGNS PAGE-->
+
+
+
+<!--INVENTORY PAGE START-->
+<div id="inventoryPageId" class="section is-hidden">
+  <div class="container is-widescreen notification is-info">
+    <div class="tile is-ancestor">
+      <div class="tile is-parent">
+        <div class="tile is-child box">
+          <p class="image">
+            <img  id="selectedShirtImage" src="/image/sampleShirtFrontSmall.jpg">
+          </p>
+        </div>
+      </div>
+      <div class="tile is-parent is-9">
+        <div class="tile is-child box">
+          <p class="title is-pulled-right">Inventory</p>
+            <table class="table is-striped is-hoverable is-fullwidth">
+              <thead id="inventoryTableHeader">
+                <tr>
+                  <th>Color</th>
+                  <th>SM</th>
+                  <th>MD</th>
+                  <th>LG</th>
+                  <th>XL</th>
+                  <th>2XL</th>
+                  <th>3XL</th>
+                  <th>4XL</th>
+                  <th>5XL</th>
+                  <th>6XL</th>
+                  <th>7XL</th>
+                  <th>Style</th>
+                </tr>
+              </thead>
+              <tfoot id="inventoryTableFooter">
+                <tr>
+                  <th>Color</th>
+                  <th>SM</th>
+                  <th>MD</th>
+                  <th>LG</th>
+                  <th>XL</th>
+                  <th>2XL</th>
+                  <th>3XL</th>
+                  <th>4XL</th>
+                  <th>5XL</th>
+                  <th>6XL</th>
+                  <th>7XL</th>
+                  <th>Style</th>
+                </tr>
+              </tfoot>
+              <tbody id="inventoryTableBody">
+<!--INVENTORY DATA GOES HERE-->
+              </tbody>
+            </table>
+</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--INVENTORY PAGE END-->
+
+<!--RESET BUTTON MODAL BEGIN-->
+<div id="resetShirtVariantsModal" class="modal">
+    <div class="modal-background"></div>
+        <div class="modal-card">
+        <header class="modal-card-head">
+            Delete unsaved changes and reset this page?
+        </header>
+        <section class="modal-card-body">
+            <div class="field">
+                <div class="buttons is-centered">
+                    <span class="button is-success" onClick="app.resetShirtsVariants();document.getElementById('resetShirtVariantsModal').className = 'modal';">
+                        <span class="icon is-small">
+                            <i class="fas fa-thumbs-up"></i>
+                        </span>
+                        <span>
+                            <strong>Mhmm</strong>
+                        </span>
+                    </span>
+                    <span class="button is-danger" onClick="document.getElementById('resetShirtVariantsModal').className = 'modal';">
+                        <span class="icon is-small">
+                            <i class="fas fa-thumbs-down"></i>
+                        </span>
+                        <span>
+                            <strong>Nah</strong>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<!--RESET BUTTON MODAL END-->
+
+
+        
+        <script defer src="https://use.fontawesome.com/releases/v5.2.0/js/all.js" integrity="sha384-4oV5EgaV02iISL2ban6c/RmotsABqE4yZxZLcYMAdG7FAPsyHYAPpywE9PJo+Khy" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="js/bundle.js"></script>
+    </body>
+</html>

@@ -1,0 +1,31 @@
+<div class="navbar-item has-dropdown is-hoverable">
+    <a class="navbar-link" onclick="document.getElementById('inventoryDropdown').classList.toggle('is-hidden-touch');">
+        <span class="icon has-text-info">
+            <i class="fas fa-layer-group"></i>
+        </span>
+        <span class="is-hidden-desktop-only">
+            Inventory
+        </span>
+    </a>
+    <div id="inventoryDropdown" class="navbar-dropdown is-hidden-touch">
+        <a class="navbar-item" onclick="app.showPage('inventoryPageId')">
+            <span>
+                <span class="icon has-text-info">
+                    <i class="fas fa-tshirt fa-2x"></i>
+                </span>
+                <br>
+                Inventory of <strong>t-shirt blanks</strong>.
+            </span>
+        </a>
+        <hr class="navbar-divider">
+        <a class="navbar-item">
+            <span>
+                <span class="icon has-text-info">
+                    <i class="far fa-map fa-2x"></i>
+                </span>
+                <br>
+                Inventory of pre-made <strong>heat transfers</strong>.
+            </span>
+        </a>
+    </div>
+</div>

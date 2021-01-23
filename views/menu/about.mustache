@@ -1,0 +1,41 @@
+<div class="navbar-item has-dropdown is-hoverable">
+  <a class="navbar-link"onclick="document.getElementById('aboutDropdown').classList.toggle('is-hidden-touch');">
+      <span class="icon has-text-info">
+          <i class="fas fa-info-circle" id="about-link-icon"></i>
+      </span>
+      <span class="is-hidden-desktop-only">
+          About
+      </span>
+  </a>
+  <div id="aboutDropdown" class="navbar-dropdown is-hidden-touch">
+      <a class="navbar-item" href="https://www.okta.com" target="_blank">
+          <span>
+              <span class="icon has-text-info">
+                  <i id="okta-logo" class=""></i>
+              </span>
+              <br>
+              User authentication by <strong>Okta</strong>.
+          </span>
+      </a>
+      <hr class="navbar-divider">
+      <a class="navbar-item" href="https://jasonlambert.io" target="_blank">
+          <span>
+              <span class="icon has-text-info">
+                  <i class="fas fa-external-link-alt fa-2x"></i>
+              </span>
+              <br>
+              Visit the developer's website.
+          </span>
+      </a>
+      <hr class="navbar-divider">
+      <a class="navbar-item" href="mailto:jason@jasonlambert.io">
+          <span>
+              <span class="icon has-text-info">
+                  <i class="fas fa-at fa-2x"></i>
+              </span>
+              <br>
+              Email the developer.
+          </span>
+      </a>
+  </div>
+</div>
