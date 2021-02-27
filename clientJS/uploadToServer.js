@@ -5,7 +5,7 @@ module.exports = function (elementId, frontORback, element, description) {
   var pictureToUpdate = element.previousElementSibling.childNodes[1].id
   var hiddenElement = document.getElementById(elementId + frontORback + "PlaceHolder")
 
-var pic = document.getElementById(pictureToUpdate)
+  var pic = document.getElementById(pictureToUpdate)
   pic.src = "/image/whiteBlank.jpg"
   pic.className = "is-hidden"
   hiddenElement.className = "myLoader"
@@ -20,17 +20,18 @@ var pic = document.getElementById(pictureToUpdate)
   formData.append('photo', file);
   fetch('/upload', {method: 'POST', body: formData})
   .then(response => response.json())
-  .then(filePath => {
-    console.log(filePath);
+  .then(response => {
+    console.log(response.filePath);
     let regex = /\/uploads\/(.+)$/;
-    let assetUrl = encodeURI("https://t-shirts.jasonlambert.io" + regex.exec(filePath)[0]);
+    // let assetUrl = encodeURI("https://t-shirts.jasonlambert.io" + regex.exec(response.filePath)[0]);
+    let assetUrl = response.filePath;
     console.log(assetUrl)
 
     if(elementId == "keyGraphic") {
       var regexExt = /(?:\.([^.]+))?$/;
-      var fileExtension = regexExt.exec(filePath)[1];   
+      var fileExtension = regexExt.exec(response.filePath)[1];   
 
-      updateMockupImage.updateKeyGraphicImage(pictureToUpdate, hiddenElement, assetUrl, null, fileExtension);
+      updateMockupImage.updateKeyGraphicImage(pictureToUpdate, hiddenElement, assetUrl, response.assetId, fileExtension);
     } else {
       updateMockupImage.updateMockShirtImage(pictureToUpdate, hiddenElement, assetUrl, null);
     }

@@ -45,12 +45,12 @@ module.exports = {
   show: function() {
     document.getElementById(appCreateShirt).className = ""
     // var saveButtonHtml = '<p class="control"><a class="button is-danger" onClick="document.getElementById(\'resetShirtVariantsModal\').className = \'modal is-active\'"><span class="icon"><i class="fas fa-sync-alt"></i></span><strong>Reset</strong></a></p><p class="control"><a class="button is-info" onClick="app.saveButtonWasPressed()"><span class="icon"><i class="fas fa-save"></i></span><strong>Save</strong></a></p>'
-    // document.getElementById("headerRight").innerHTML = saveButtonHtml
+    // document.getElementById("designSaveResetButtons").innerHTML = saveButtonHtml
   },
   
   hide: function() {
     document.getElementById(appCreateShirt).className = "is-hidden"
-    // document.getElementById("headerRight").innerHTML = ""
+    // document.getElementById("designSaveResetButtons").innerHTML = ""
   },
   
   setupNewShirtPage: function(globalDataObject) {

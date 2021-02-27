@@ -71,6 +71,18 @@ window.onload = () => {
     c-22.2,0-40.2-18-40.2-40.2c0-22.2,18-40.2,40.2-40.2s40.2,18,40.2,40.2C567.9,305.2,549.8,323.2,527.8,323.2z']
   });
   document.getElementById("okta-logo").className = "fac fa-okta fa-2x";
+
+  fetch('/checkKeyGraphic')
+  .then(response => response.json())
+  .then(response => {
+    if(response.haveGraphic) {
+      var element = document.getElementById("keyGraphic");
+      element.src = response.assetUrl+"?time="+ new Date().getTime();
+    }
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 };
 
 var currentPage = "";
@@ -595,6 +607,8 @@ function composeSaveDesignBody() {
     // jsonBody.shirtModelsArray = tShirtModelArray
     jsonBody.ebayShippingFees = {'13oz': 5.50, '12oz': 4.10,	'11oz': 4.10, '10oz': 4.10,	'9oz': 4.10, '8oz': 3.50, '7oz': 3.50, '6oz': 3.50};
 
+    console.log(JSON.stringify(jsonBody, null, 2));
+
     return jsonBody
 }
 },{"./tShirtVariant.js":8,"request":280}],8:[function(require,module,exports){
@@ -645,12 +659,12 @@ module.exports = {
   show: function() {
     document.getElementById(appCreateShirt).className = ""
     // var saveButtonHtml = '<p class="control"><a class="button is-danger" onClick="document.getElementById(\'resetShirtVariantsModal\').className = \'modal is-active\'"><span class="icon"><i class="fas fa-sync-alt"></i></span><strong>Reset</strong></a></p><p class="control"><a class="button is-info" onClick="app.saveButtonWasPressed()"><span class="icon"><i class="fas fa-save"></i></span><strong>Save</strong></a></p>'
-    // document.getElementById("headerRight").innerHTML = saveButtonHtml
+    // document.getElementById("designSaveResetButtons").innerHTML = saveButtonHtml
   },
   
   hide: function() {
     document.getElementById(appCreateShirt).className = "is-hidden"
-    // document.getElementById("headerRight").innerHTML = ""
+    // document.getElementById("designSaveResetButtons").innerHTML = ""
   },
   
   setupNewShirtPage: function(globalDataObject) {
@@ -884,7 +898,7 @@ var request = require('request');
 
 module.exports = {
 	updateMockShirtImage: updateMockShirtImage,
-	updateKeyGraphicImage:updateKeyGraphicImage
+	updateKeyGraphicImage: updateKeyGraphicImage
 }
 
 
@@ -912,7 +926,8 @@ function post(url, callback, pictureToUpdate, assetId, assetUrl, hiddenElement) 
 // callback function
 function keyGraphicIsReady(pictureToUpdate, assetId, assetUrl, hiddenElement) {
     var element = document.getElementById(pictureToUpdate)
-    element.src = "image/temp/workingdesign/keyGraphic.png?time="+ new Date().getTime()
+    // element.src = "image/temp/workingdesign/keyGraphic.png?time="+ new Date().getTime()
+    element.src = assetUrl+"?time="+ new Date().getTime();
     element.setAttribute("value", assetId)
     element.url = assetUrl
     element.className = "shirtPics"
@@ -942,7 +957,7 @@ module.exports = function (elementId, frontORback, element, description) {
   var pictureToUpdate = element.previousElementSibling.childNodes[1].id
   var hiddenElement = document.getElementById(elementId + frontORback + "PlaceHolder")
 
-var pic = document.getElementById(pictureToUpdate)
+  var pic = document.getElementById(pictureToUpdate)
   pic.src = "/image/whiteBlank.jpg"
   pic.className = "is-hidden"
   hiddenElement.className = "myLoader"
@@ -957,17 +972,18 @@ var pic = document.getElementById(pictureToUpdate)
   formData.append('photo', file);
   fetch('/upload', {method: 'POST', body: formData})
   .then(response => response.json())
-  .then(filePath => {
-    console.log(filePath);
+  .then(response => {
+    console.log(response.filePath);
     let regex = /\/uploads\/(.+)$/;
-    let assetUrl = encodeURI("https://t-shirts.jasonlambert.io" + regex.exec(filePath)[0]);
+    // let assetUrl = encodeURI("https://t-shirts.jasonlambert.io" + regex.exec(response.filePath)[0]);
+    let assetUrl = response.filePath;
     console.log(assetUrl)
 
     if(elementId == "keyGraphic") {
       var regexExt = /(?:\.([^.]+))?$/;
-      var fileExtension = regexExt.exec(filePath)[1];   
+      var fileExtension = regexExt.exec(response.filePath)[1];   
 
-      updateMockupImage.updateKeyGraphicImage(pictureToUpdate, hiddenElement, assetUrl, null, fileExtension);
+      updateMockupImage.updateKeyGraphicImage(pictureToUpdate, hiddenElement, assetUrl, response.assetId, fileExtension);
     } else {
       updateMockupImage.updateMockShirtImage(pictureToUpdate, hiddenElement, assetUrl, null);
     }

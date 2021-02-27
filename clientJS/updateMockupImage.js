@@ -2,7 +2,7 @@ var request = require('request');
 
 module.exports = {
 	updateMockShirtImage: updateMockShirtImage,
-	updateKeyGraphicImage:updateKeyGraphicImage
+	updateKeyGraphicImage: updateKeyGraphicImage
 }
 
 
@@ -30,7 +30,8 @@ function post(url, callback, pictureToUpdate, assetId, assetUrl, hiddenElement) 
 // callback function
 function keyGraphicIsReady(pictureToUpdate, assetId, assetUrl, hiddenElement) {
     var element = document.getElementById(pictureToUpdate)
-    element.src = "image/temp/workingdesign/keyGraphic.png?time="+ new Date().getTime()
+    // element.src = "image/temp/workingdesign/keyGraphic.png?time="+ new Date().getTime()
+    element.src = assetUrl+"?time="+ new Date().getTime();
     element.setAttribute("value", assetId)
     element.url = assetUrl
     element.className = "shirtPics"

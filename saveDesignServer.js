@@ -1,11 +1,10 @@
 const contentful = require('contentful-management')
 var crypto = require('crypto');
 var fullSizeMockup = require("./getMockupWithColorServer.js").fullSizeMockup
-var prettyJ = require("./convenienceFunctions.js").prettyConsoleJson;
 var createEbayListing = require("./ebay/createEbayListing.js");
 
 const client = contentful.createClient({
-	accessToken: process.env.CONTENTFUL_TOKEN
+	accessToken: process.env.CONTENTFUL_MAN_TOKEN
 })
 
 module.exports = function(req, res) {
@@ -43,7 +42,6 @@ function uploadToContentful(designName, ebayTitle, descriptiveTitle, theme, desi
       shirtBlankArray.forEach(function(blank) {
         if(myVariationsArray[0].blankId == blank.id) backMockupImage = blank.backPic.id;
       })
-      
       
       // Create entry
       client.getSpace(process.env.CONTENTFUL_SPACE_ID)

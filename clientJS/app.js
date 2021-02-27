@@ -70,6 +70,18 @@ window.onload = () => {
     c-22.2,0-40.2-18-40.2-40.2c0-22.2,18-40.2,40.2-40.2s40.2,18,40.2,40.2C567.9,305.2,549.8,323.2,527.8,323.2z']
   });
   document.getElementById("okta-logo").className = "fac fa-okta fa-2x";
+
+  fetch('/checkKeyGraphic')
+  .then(response => response.json())
+  .then(response => {
+    if(response.haveGraphic) {
+      var element = document.getElementById("keyGraphic");
+      element.src = response.assetUrl+"?time="+ new Date().getTime();
+    }
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 };
 
 var currentPage = "";

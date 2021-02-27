@@ -53,6 +53,16 @@
                     </span>
                 </p>
                 </div>
+                {{#isLoggedIn}}
+                <div class="buttons" id="designSaveResetButtons">
+                    <button class="button is-danger" onClick="document.getElementById(\'resetShirtVariantsModal\').className = \'modal is-active\'">
+                        <span class="icon"><i class="fas fa-sync-alt"></i></span><strong>Reset</strong>
+                    </button>
+                    <button class="button is-info" onClick="app.saveButtonWasPressed()"><span class="icon">
+                        <i class="fas fa-save"></i></span><strong>Save</strong>
+                    </button>
+                </div>
+                {{/isLoggedIn}}
             </div>
         </div>
     </div>

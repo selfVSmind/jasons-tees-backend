@@ -10,10 +10,26 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const url = require('url');
+const bodyParser = require('body-parser')
+require('body-parser-xml')(bodyParser);
 
 const downloadKeyGraphicFile = require('./downloadKeyGraphicFile');
 const getMockupWithColor = require('./getMockupWithColorServer').ajax;
-const getContentfulEntries = require('./getContentfulEntries');
+const saveDesign = require('./saveDesignServer.js');
+const getContentfulEntries = require('./getContentfulEntries').sendToClient;
+
+// let contentfulEntries;
+
+// const contentful = require('contentful');
+// const client = contentful.createClient({
+// 	space: process.env.CONTENTFUL_SPACE_ID,
+// 	accessToken: process.env.CONTENTFUL_TOKEN
+// });
+
+// client.getEntries()
+// .then((entries) => {
+//   contentfulEntries = JSON.parse(JSON.stringify(entries));
+// });
 
 const templateDir = path.join(__dirname, '.', 'views');
 
@@ -21,7 +37,7 @@ const templateDir = path.join(__dirname, '.', 'views');
 const cssDir = path.join(__dirname, '.', 'public', 'css');
 const jsDir = path.join(__dirname, '.', 'public', 'js');
 const imageDir = path.join(__dirname, '.', 'public', 'image');
-const uploadsDir = path.join(__dirname, '.', 'uploads');
+const publicUploadsDir = path.join(__dirname, '.', 'uploads');
 
 // HTTPS Certificate stuffs
 const credentials = {
@@ -37,6 +53,7 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const { originalname } = file;
     cb(null, `${uuid()}-${originalname}`);
+    // cb(null, "keyGraphic.ai");
   }
 });
 const upload = multer({ storage });
@@ -92,7 +109,7 @@ app.use(session({
 app.use('/css', express.static(cssDir));
 app.use('/js', express.static(jsDir));
 app.use('/image', express.static(imageDir));
-app.use('/uploads', express.static(uploadsDir));
+app.use('/uploads', express.static(publicUploadsDir));
 
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
@@ -101,6 +118,10 @@ app.set('views', templateDir);
 app.use(oidc.router);
 
 app.get('/', (req, res) => {
+  let tempPath = path.join(__dirname, '.', 'public', 'image', 'temp', req.sessionID);
+  if(!fs.existsSync(tempPath)) fs.mkdirSync(tempPath);
+  req.session.tempPath = tempPath;
+  
   if(req.session.file) console.log(req.session.file);
   const template = 't-shirt-one-page';
   const userinfo = req.userContext && req.userContext.userinfo;
@@ -121,13 +142,30 @@ app.get('/profile', oidc.ensureAuthenticated(), (req, res) => {
   });
 });
 
+app.use(bodyParser.json());
+app.use(bodyParser.xml());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
 app.post('/downloadKeyGraphicFile', downloadKeyGraphicFile);
 app.post('/getMockupWithColor', getMockupWithColor);
 app.get('/getContentfulEntries', getContentfulEntries);
+// app.post('/saveDesign', oidc.ensureAuthenticated(), saveDesign);
+
+app.get('/checkKeyGraphic', (req, res) => {
+  if(fs.existsSync(path.join(__dirname, 'public', 'image', 'temp', req.sessionID, "keyGraphic.png"))) res.json({haveGraphic: true, assetUrl: "image/temp/"+req.sessionID+"/keyGraphic.png"});
+  else res.json({haveGraphic: false});
+});
 
 app.post('/upload', upload.single('photo'), (req, res) => {
-  req.session.file = req.file.path;
-  return res.json(req.file.path);
+  // req.session.file = req.file.path;
+  // let oldFileName = path.join(process.env.UPLOADS_DIR, "keyGraphic.ai");
+  let oldFileName = req.file.path;
+  let newFileName = path.join(req.session.tempPath, "keyGraphic.ai");
+  fs.renameSync(oldFileName, newFileName);
+  downloadKeyGraphicFile(req, res, req.file);
+  // return res.json(req.file.path);
 });
 
 oidc.on('ready', () => {

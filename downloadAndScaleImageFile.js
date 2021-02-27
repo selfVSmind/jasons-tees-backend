@@ -1,9 +1,10 @@
 var fs = require('fs');
 var wget = require('wget-improved');
 var exec = require('child_process').exec;
+const path = require('path');
 
 module.exports = function(blankShirtMockupDirectory, blankFileNameHashed, remoteFile, width, callbackFunction) {
-    var localFile = blankShirtMockupDirectory + blankFileNameHashed
+    var localFile = path.join(blankShirtMockupDirectory, blankFileNameHashed);
     try {
         if(fs.statSync(localFile).isFile()) {
             scale(blankShirtMockupDirectory, blankFileNameHashed, width, callbackFunction);
@@ -31,13 +32,13 @@ module.exports = function(blankShirtMockupDirectory, blankFileNameHashed, remote
 };
 
 function scale(blankShirtMockupDirectory, blankFileNameHashed, width, callbackFunction) {
-    var scaledFileName = blankShirtMockupDirectory + "scaled/" + width + "x" + blankFileNameHashed
+    var scaledFileName = blankShirtMockupDirectory + "/scaled/" + width + "x" + blankFileNameHashed
     try {
         if(fs.statSync(scaledFileName).isFile()) {
             callbackFunction
         }
     } catch(e) {
-        var cliCommand = "convert -resize " + width + "x " + blankShirtMockupDirectory + blankFileNameHashed + " " + scaledFileName
+        var cliCommand = "convert -resize " + width + "x " + blankShirtMockupDirectory + '/' + blankFileNameHashed + " " + scaledFileName
         exec(cliCommand, 
             function (error, stdout, stderr) {
         	console.log(cliCommand)

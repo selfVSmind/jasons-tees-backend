@@ -69,5 +69,7 @@ function composeSaveDesignBody() {
     // jsonBody.shirtModelsArray = tShirtModelArray
     jsonBody.ebayShippingFees = {'13oz': 5.50, '12oz': 4.10,	'11oz': 4.10, '10oz': 4.10,	'9oz': 4.10, '8oz': 3.50, '7oz': 3.50, '6oz': 3.50};
 
+    console.log(JSON.stringify(jsonBody, null, 2));
+
     return jsonBody
 }
