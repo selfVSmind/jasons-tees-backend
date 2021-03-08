@@ -51,8 +51,8 @@ module.exports = {
                 Object.assign(shirtSampleRemoved, {[variantId]: "beleted"})
             }
         }
-        
-        Object.assign(variantBlankSelections, {[variantId]: {color: blankSelectorSelection.color, frontPic: blankSelectorSelection.frontPic}})
+        // console.log(JSON.stringify(blankSelectorSelection, null, 2));
+        Object.assign(variantBlankSelections, {[variantId]: {color: blankSelectorSelection.color, modelId: blankSelectorSelection.modelId}})
         checkArraysForMatch(variantId)
         return {"blankId": blankSelectorSelection.value, "blankUrl": blankSelectorSelection.frontPic, "descriptiveText": getVariantDescriptiveText(variantId)};
     },
@@ -64,7 +64,7 @@ module.exports = {
             delete variantHtvSelections[variantId]
             setInputText(variantId, "")
         } else {
-            Object.assign(variantHtvSelections, {[variantId]: {color: htvSelectorSelection.innerText, hexColor: htvSelectorSelection.hexColor}})
+            Object.assign(variantHtvSelections, {[variantId]: {modelId: htvSelectorSelection.modelId, color: htvSelectorSelection.innerText, hexColor: htvSelectorSelection.hexColor}})
             checkArraysForMatch(variantId)
         }
         return {"htvId": htvSelectorSelection.value, "hexColor": htvSelectorSelection.hexColor, "descriptiveText": getVariantDescriptiveText(variantId)};
@@ -79,7 +79,8 @@ module.exports = {
 function checkArraysForMatch(variantId) {
     if((variantHtvSelections[variantId]) && (variantBlankSelections[variantId])){
         setInputText(variantId, variantHtvSelections[variantId].color + " on " + variantBlankSelections[variantId].color);
-        getMockupWithColor(variantId, variantBlankSelections[variantId].frontPic, variantHtvSelections[variantId].hexColor);
+        getMockupWithColor(variantId, variantHtvSelections[variantId].modelId, variantBlankSelections[variantId].modelId);
+        // console.log(JSON.stringify(variantBlankSelections[variantId], null, 2));
     }
 }
 

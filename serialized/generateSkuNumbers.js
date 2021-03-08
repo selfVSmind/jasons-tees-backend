@@ -1,6 +1,8 @@
 var fs = require("fs");
+const path = require('path');
 
-const fileName = 'serialized/do_not_delete/do_not_modify/serial';
+
+const fileName = path.join(__dirname, 'do_not_delete', 'do_not_modify', 'serial');
 const encoding = 'utf-8';
 
 module.exports = function(numberOfSkus) {

@@ -151,7 +151,7 @@ app.use(bodyParser.urlencoded({
 app.post('/downloadKeyGraphicFile', downloadKeyGraphicFile);
 app.post('/getMockupWithColor', getMockupWithColor);
 app.get('/getContentfulEntries', getContentfulEntries);
-// app.post('/saveDesign', oidc.ensureAuthenticated(), saveDesign);
+app.post('/saveDesign', oidc.ensureAuthenticated(), saveDesign);
 
 app.get('/checkKeyGraphic', (req, res) => {
   if(fs.existsSync(path.join(__dirname, 'public', 'image', 'temp', req.sessionID, "keyGraphic.png"))) res.json({haveGraphic: true, assetUrl: "image/temp/"+req.sessionID+"/keyGraphic.png"});

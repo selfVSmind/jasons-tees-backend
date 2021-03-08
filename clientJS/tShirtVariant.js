@@ -231,6 +231,7 @@ function makeDropdown(selectorName) {
       shirtBlankOption.backPic = shirtBlank.backPic.url
       shirtBlankOption.color = shirtBlank.color
       shirtBlankOption.brandName = model.brand
+      shirtBlankOption.modelId = shirtBlank.id
 
       blankSelector.add(shirtBlankOption)
     }
@@ -249,6 +250,7 @@ function makeSecondDropdown(selectorName) {
     htvColorOption.hexColor = entry.pantoneEquivalentValue
     htvColorOption.brandName = entry.brandName
     htvColorOption.htvType = entry.htvType
+    htvColorOption.modelId = entry.id
 
     blankSelector.add(htvColorOption)
   })

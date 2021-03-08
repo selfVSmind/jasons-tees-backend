@@ -10,10 +10,10 @@ const client = sdk.createClient({
 
 
 module.exports = function(req, res) {
-	let keyGraphicFile = req.session.tempPath+"/keyGraphic.ai";
+	let keyGraphicFile = path.join(__dirname, 'public', 'image', 'temp', req.sessionID, 'keyGraphic.ai');
 	if(!keyGraphicFile) return;
 
-	var whereToSave = req.session.tempPath+"/keyGraphic.png";
+	var whereToSave = path.join(__dirname, 'public', 'image', 'temp', req.sessionID, 'keyGraphic.png');
 
 	// const options = {};
 	// let download = wget.download(req.query.keyGraphicUrl, whereToSave, options);
@@ -27,6 +27,8 @@ module.exports = function(req, res) {
 	//     console.log("Download keyGraphicFile: "+output);
 	uploadToContentful(req.sessionID, req.session.tempPath)
 	.then((asset) => {
+		req.session.keyGraphicId = asset.sys.id;
+		console.log(JSON.stringify(req.session, null, 2));
 		var cliCommand = "convert -colorspace rgb -fill '#000000' -fuzz 100% -opaque '#7F7F7F' " + `"${keyGraphicFile}" "${whereToSave}"`;
 		exec(cliCommand, 
 				function (error, stdout, stderr) {
@@ -57,15 +59,15 @@ function uploadToContentful(sessionID, tempPath) {
 		.then((space) => space.createAssetFromFiles({
 		  fields: {
 			title: {
-			  'en-US': `"${sessionID}"`
+			  'en-US': `"${'keyGraphic_'+sessionID}"`
 			},
 			description: {
-			  'en-US': `"${sessionID}"`
+			  'en-US': `"${'keyGraphic_'+sessionID}"`
 			},
 			file: {
 			  'en-US': {
 				contentType: "application/postscript",
-				fileName: `"${sessionID}"`,
+				fileName: `"${sessionID+'_keyGraphic.ai'}"`,
 				file: `"${tempPath+"/keyGraphic.ai"}"`
 			  }
 			}

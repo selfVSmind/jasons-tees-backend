@@ -1,7 +1,7 @@
-const contentful = require('contentful-management')
-var crypto = require('crypto');
-var fullSizeMockup = require("./getMockupWithColorServer.js").fullSizeMockup
-var createEbayListing = require("./ebay/createEbayListing.js");
+let contentful = require('contentful-management')
+let crypto = require('crypto');
+let fullSizeMockup = require("./getMockupWithColorServer.js").fullSizeMockup
+let createEbayListing = require("./ebay/createEbayListing.js");
 
 const client = contentful.createClient({
 	accessToken: process.env.CONTENTFUL_MAN_TOKEN
@@ -10,7 +10,7 @@ const client = contentful.createClient({
 module.exports = function(req, res) {
   // req.body.designSpecs.variations.splice(1) //faster testing
     res.send("Processing request.");
-    uploadToContentful(req.body.designSpecs.title, req.body.designSpecs.ebayTitle, "", req.body.designSpecs.theme, req.body.designSpecs.designFile.designFileId, req.body.designSpecs.variations, req.body.blankShirtArray)
+    uploadToContentful(req.sessionID, req.body.designSpecs.title, req.body.designSpecs.ebayTitle, "", req.body.designSpecs.theme, req.body.designSpecs.designFile.designFileId, req.body.designSpecs.variations, req.body.blankShirtArray)
     .then(value => {
       return createEbayListing(value, req.body);
     })
@@ -23,9 +23,9 @@ module.exports = function(req, res) {
     });
 };
 
-function uploadToContentful(designName, ebayTitle, descriptiveTitle, theme, designFileId, variations, shirtBlankArray) {
+function uploadToContentful(sessionID, designName, ebayTitle, descriptiveTitle, theme, designFileId, variations, shirtBlankArray) {
   return new Promise((uploadedToContentful) => {
-    let variationsPromiseArray = createAndUploadVariations(variations, shirtBlankArray);
+    let variationsPromiseArray = createAndUploadVariations(sessionID, variations, shirtBlankArray);
     let myVariationsArray = JSON.parse(JSON.stringify(variations))
     Promise.all(variationsPromiseArray).then((value) => {
       for(var i = 0; i < myVariationsArray.length; ++i) {
@@ -119,10 +119,10 @@ function getGeometry(id, shirtBlankArray) {
   }
 }
 
-function createAndUploadVariations(variations, blankShirtArray) {
+function createAndUploadVariations(sessionID, variations, blankShirtArray) {
   var promiseArray = new Array();
   for(var i = 0; i < variations.length; ++i) {
-    var variantPromise = fullSizeMockup(variations[i].blankUrl, variations[i].hexColor, getGeometry(variations[i].blankId, blankShirtArray), variations[i].variantName)
+    var variantPromise = fullSizeMockup(sessionID, variations[i].blankUrl, variations[i].hexColor, getGeometry(variations[i].blankId, blankShirtArray), variations[i].variantName)
     promiseArray.push(variantPromise)
   };
   return promiseArray;

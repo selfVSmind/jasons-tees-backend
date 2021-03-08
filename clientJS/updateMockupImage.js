@@ -7,10 +7,13 @@ module.exports = {
 
 
 // upload the design graphic
+// function updateKeyGraphicImage(pictureToUpdate, hiddenElement, assetUrl, assetId, fileExtension) {
+// 	var postUrl = "https://t-shirts.jasonlambert.io/downloadKeyGraphicFile?keyGraphicUrl=" + assetUrl + "&fileExtension=" + fileExtension
+// 	console.log("Posting This: " + postUrl);
+// 	post(postUrl, keyGraphicIsReady, pictureToUpdate, assetId, assetUrl, hiddenElement);
+// }
 function updateKeyGraphicImage(pictureToUpdate, hiddenElement, assetUrl, assetId, fileExtension) {
-	var postUrl = "https://t-shirts.jasonlambert.io/downloadKeyGraphicFile?keyGraphicUrl=" + assetUrl + "&fileExtension=" + fileExtension
-	console.log("Posting This: " + postUrl);
-	post(postUrl, keyGraphicIsReady, pictureToUpdate, assetId, assetUrl, hiddenElement);
+	keyGraphicIsReady(pictureToUpdate, assetId, assetUrl, hiddenElement);
 }
 
 function post(url, callback, pictureToUpdate, assetId, assetUrl, hiddenElement) {

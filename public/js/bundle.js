@@ -136,11 +136,11 @@ document.onkeydown = function(evt) {
 var request = require('request');
 
 // upload the design graphic
-module.exports = function requestMockupImage(variantId, shirtBlankFrontPicUrl, hexColor) {
+module.exports = function requestMockupImage(variantId, vinylModelId, tShirtModelId) {
     // I'm thinking I can still use this somehow
     var assetId = "we don't know the assetID because this hasnt been uploaded to contentful"
     
-	var postUrl = "https://t-shirts.jasonlambert.io/getMockupWithColor?shirtBlankFrontPicUrl=https:"+shirtBlankFrontPicUrl+"&hexColor="+hexColor
+	var postUrl = "https://t-shirts.jasonlambert.io/getMockupWithColor?vinylModelId="+vinylModelId+"&tShirtModelId="+tShirtModelId;
 	console.log("Posting This: " + postUrl);
 	post(postUrl, mockupImageIsReady, variantId+"FrontPic", assetId, variantId+"FrontPicPlaceHolder");
 }
@@ -496,8 +496,8 @@ module.exports = {
                 Object.assign(shirtSampleRemoved, {[variantId]: "beleted"})
             }
         }
-        
-        Object.assign(variantBlankSelections, {[variantId]: {color: blankSelectorSelection.color, frontPic: blankSelectorSelection.frontPic}})
+        // console.log(JSON.stringify(blankSelectorSelection, null, 2));
+        Object.assign(variantBlankSelections, {[variantId]: {color: blankSelectorSelection.color, modelId: blankSelectorSelection.modelId}})
         checkArraysForMatch(variantId)
         return {"blankId": blankSelectorSelection.value, "blankUrl": blankSelectorSelection.frontPic, "descriptiveText": getVariantDescriptiveText(variantId)};
     },
@@ -509,7 +509,7 @@ module.exports = {
             delete variantHtvSelections[variantId]
             setInputText(variantId, "")
         } else {
-            Object.assign(variantHtvSelections, {[variantId]: {color: htvSelectorSelection.innerText, hexColor: htvSelectorSelection.hexColor}})
+            Object.assign(variantHtvSelections, {[variantId]: {modelId: htvSelectorSelection.modelId, color: htvSelectorSelection.innerText, hexColor: htvSelectorSelection.hexColor}})
             checkArraysForMatch(variantId)
         }
         return {"htvId": htvSelectorSelection.value, "hexColor": htvSelectorSelection.hexColor, "descriptiveText": getVariantDescriptiveText(variantId)};
@@ -524,7 +524,8 @@ module.exports = {
 function checkArraysForMatch(variantId) {
     if((variantHtvSelections[variantId]) && (variantBlankSelections[variantId])){
         setInputText(variantId, variantHtvSelections[variantId].color + " on " + variantBlankSelections[variantId].color);
-        getMockupWithColor(variantId, variantBlankSelections[variantId].frontPic, variantHtvSelections[variantId].hexColor);
+        getMockupWithColor(variantId, variantHtvSelections[variantId].modelId, variantBlankSelections[variantId].modelId);
+        // console.log(JSON.stringify(variantBlankSelections[variantId], null, 2));
     }
 }
 
@@ -845,6 +846,7 @@ function makeDropdown(selectorName) {
       shirtBlankOption.backPic = shirtBlank.backPic.url
       shirtBlankOption.color = shirtBlank.color
       shirtBlankOption.brandName = model.brand
+      shirtBlankOption.modelId = shirtBlank.id
 
       blankSelector.add(shirtBlankOption)
     }
@@ -863,6 +865,7 @@ function makeSecondDropdown(selectorName) {
     htvColorOption.hexColor = entry.pantoneEquivalentValue
     htvColorOption.brandName = entry.brandName
     htvColorOption.htvType = entry.htvType
+    htvColorOption.modelId = entry.id
 
     blankSelector.add(htvColorOption)
   })
@@ -903,10 +906,13 @@ module.exports = {
 
 
 // upload the design graphic
+// function updateKeyGraphicImage(pictureToUpdate, hiddenElement, assetUrl, assetId, fileExtension) {
+// 	var postUrl = "https://t-shirts.jasonlambert.io/downloadKeyGraphicFile?keyGraphicUrl=" + assetUrl + "&fileExtension=" + fileExtension
+// 	console.log("Posting This: " + postUrl);
+// 	post(postUrl, keyGraphicIsReady, pictureToUpdate, assetId, assetUrl, hiddenElement);
+// }
 function updateKeyGraphicImage(pictureToUpdate, hiddenElement, assetUrl, assetId, fileExtension) {
-	var postUrl = "https://t-shirts.jasonlambert.io/downloadKeyGraphicFile?keyGraphicUrl=" + assetUrl + "&fileExtension=" + fileExtension
-	console.log("Posting This: " + postUrl);
-	post(postUrl, keyGraphicIsReady, pictureToUpdate, assetId, assetUrl, hiddenElement);
+	keyGraphicIsReady(pictureToUpdate, assetId, assetUrl, hiddenElement);
 }
 
 function post(url, callback, pictureToUpdate, assetId, assetUrl, hiddenElement) {

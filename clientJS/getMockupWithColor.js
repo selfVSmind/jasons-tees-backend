@@ -1,11 +1,11 @@
 var request = require('request');
 
 // upload the design graphic
-module.exports = function requestMockupImage(variantId, shirtBlankFrontPicUrl, hexColor) {
+module.exports = function requestMockupImage(variantId, vinylModelId, tShirtModelId) {
     // I'm thinking I can still use this somehow
     var assetId = "we don't know the assetID because this hasnt been uploaded to contentful"
     
-	var postUrl = "https://t-shirts.jasonlambert.io/getMockupWithColor?shirtBlankFrontPicUrl=https:"+shirtBlankFrontPicUrl+"&hexColor="+hexColor
+	var postUrl = "https://t-shirts.jasonlambert.io/getMockupWithColor?vinylModelId="+vinylModelId+"&tShirtModelId="+tShirtModelId;
 	console.log("Posting This: " + postUrl);
 	post(postUrl, mockupImageIsReady, variantId+"FrontPic", assetId, variantId+"FrontPicPlaceHolder");
 }
