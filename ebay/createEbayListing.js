@@ -27,9 +27,9 @@ var inventoryApi = require("./inventoryApi/inventoryApi.js");
 
 var eBayAuthToken = "";
 
-module.exports = function(contentfulEntry, reqBody) {
+module.exports = function(ebayRefreshToken, contentfulEntry, reqBody) {
     return new Promise((resolve, reject) => {
-        createListing(contentfulEntry, reqBody, resolve, reject);
+        createListing(ebayRefreshToken, contentfulEntry, reqBody, resolve, reject);
     });
 };
 
@@ -61,7 +61,7 @@ function calculatePrice(blankPrice, weight, ebayShippingFees, markup, htvId) {
     return roundedPrice;
 }
 
-function createListing(contentfulEntry, reqBody, resolveCreateListing, rejectCreateListing) {
+function createListing(ebayRefreshToken, contentfulEntry, reqBody, resolveCreateListing, rejectCreateListing) {
     let shirtBlankArray = reqBody.blankShirtArray;
     let modelsArray = reqBody.modelsArray;
     let ebayShippingFees = reqBody.ebayShippingFees;
@@ -85,7 +85,7 @@ function createListing(contentfulEntry, reqBody, resolveCreateListing, rejectCre
     generateSkus(numberOfSkus + 1) // plus one is for the inventoryItemGroupSku
     .then((skus) => {
         itemSkuArray = skus;
-        return getToken();
+        return getToken(ebayRefreshToken);
     })
     .then(function(token) {
         

@@ -2,16 +2,14 @@ var request = require('request');
 var querystring = require('querystring');
 
 const AUTH_BASE_64 = process.env.EBAY_AUTH_BASE_64;
-const AUTH_SCOPE = "https://api.ebay.com/oauth/api_scope/sell.inventory https://api.ebay.com/oauth/api_scope/sell.account https://api.ebay.com/oauth/api_scope";
+const REDIRECT_URI = process.env.EBAY_REDIRECT_URI;
 
-function getAccessToken(refreshToken, scope) {
-    let myScope = AUTH_SCOPE;
-    if(scope) myScope = scope;
+function exchangeCodeForRefreshToken(ebayAuthCode) {
 
     let form = {
-        grant_type: 'refresh_token',
-        refresh_token: refreshToken,
-        scope: myScope
+        grant_type: 'authorization_code',
+        code: ebayAuthCode,
+        redirect_uri: REDIRECT_URI
     };
     
     let formData = querystring.stringify(form);
@@ -34,7 +32,7 @@ function getAccessToken(refreshToken, scope) {
             console.log('getEbayAccessToken statusCode:', response && response.statusCode); // Print the response status code if a response was received
             // console.log(JSON.parse(body).access_token);
             if(body) {
-                resolve(JSON.parse(body).access_token);
+                resolve(JSON.parse(body).refresh_token);
             }else {
                 reject();
             }
@@ -42,4 +40,4 @@ function getAccessToken(refreshToken, scope) {
     })    
 }
 
-module.exports = getAccessToken;
+module.exports = exchangeCodeForRefreshToken;

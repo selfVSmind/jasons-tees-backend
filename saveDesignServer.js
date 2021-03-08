@@ -12,7 +12,7 @@ module.exports = function(req, res) {
     res.send("Processing request.");
     uploadToContentful(req.sessionID, req.body.designSpecs.title, req.body.designSpecs.ebayTitle, "", req.body.designSpecs.theme, req.body.designSpecs.designFile.designFileId, req.body.designSpecs.variations, req.body.blankShirtArray)
     .then(value => {
-      return createEbayListing(value, req.body);
+      return createEbayListing(req.session.ebayRefreshToken, value, req.body);
     })
     .then((designEntry) => {
       // res.send(designEntry);

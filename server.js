@@ -17,6 +17,7 @@ const downloadKeyGraphicFile = require('./downloadKeyGraphicFile');
 const getMockupWithColor = require('./getMockupWithColorServer').ajax;
 const saveDesign = require('./saveDesignServer.js');
 const getContentfulEntries = require('./getContentfulEntries').sendToClient;
+const exchangeEbayCodeForRefreshToken = require('./ebay/exchangeCodeForEbayRefreshToken.js');
 
 // let contentfulEntries;
 
@@ -122,7 +123,6 @@ app.get('/', (req, res) => {
   if(!fs.existsSync(tempPath)) fs.mkdirSync(tempPath);
   req.session.tempPath = tempPath;
   
-  if(req.session.file) console.log(req.session.file);
   const template = 't-shirt-one-page';
   const userinfo = req.userContext && req.userContext.userinfo;
   res.render(template, {
@@ -152,6 +152,16 @@ app.post('/downloadKeyGraphicFile', downloadKeyGraphicFile);
 app.post('/getMockupWithColor', getMockupWithColor);
 app.get('/getContentfulEntries', getContentfulEntries);
 app.post('/saveDesign', oidc.ensureAuthenticated(), saveDesign);
+
+app.get('/ebay/accepted', oidc.ensureAuthenticated(), function(req, res) {
+  let ebayAuthCode;
+  if(req.query.code) ebayAuthCode = req.query.code;
+  exchangeEbayCodeForRefreshToken(ebayAuthCode)
+  .then((refreshToken) => {
+    req.session.ebayRefreshToken = refreshToken;
+    res.redirect('/');
+  });
+});
 
 app.get('/checkKeyGraphic', (req, res) => {
   if(fs.existsSync(path.join(__dirname, 'public', 'image', 'temp', req.sessionID, "keyGraphic.png"))) res.json({haveGraphic: true, assetUrl: "image/temp/"+req.sessionID+"/keyGraphic.png"});
