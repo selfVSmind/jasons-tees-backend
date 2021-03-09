@@ -127,20 +127,21 @@ app.get('/', (req, res) => {
   const userinfo = req.userContext && req.userContext.userinfo;
   res.render(template, {
     isLoggedIn: !!userinfo,
+    isEbayAuthenticated: !!req.session.ebayRefreshToken,
     userinfo: userinfo
   });
 });
 
-app.get('/profile', oidc.ensureAuthenticated(), (req, res) => {
-  // Convert the userinfo object into an attribute array, for rendering with mustache
-  const userinfo = req.userContext && req.userContext.userinfo;
-  const attributes = Object.entries(userinfo);
-  res.render('profile', {
-    isLoggedIn: !!userinfo,
-    userinfo: userinfo,
-    attributes
-  });
-});
+// app.get('/profile', oidc.ensureAuthenticated(), (req, res) => {
+//   // Convert the userinfo object into an attribute array, for rendering with mustache
+//   const userinfo = req.userContext && req.userContext.userinfo;
+//   const attributes = Object.entries(userinfo);
+//   res.render('profile', {
+//     isLoggedIn: !!userinfo,
+//     userinfo: userinfo,
+//     attributes
+//   });
+// });
 
 app.use(bodyParser.json());
 app.use(bodyParser.xml());
