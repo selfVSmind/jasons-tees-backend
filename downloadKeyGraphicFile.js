@@ -1,5 +1,5 @@
-let wget = require('wget-improved');
-let exec = require('child_process').exec;
+const wget = require('wget-improved');
+const exec = require('child_process').exec;
 const sdk = require('contentful-management');
 const path = require('path');
 

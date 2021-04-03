@@ -1,8 +1,8 @@
-let retrieveMyData = require("./myData.js");
-let tShirtVariant = require("./tShirtVariant.js");
-let tShirtDesign = require("./listTShirtDesigns.js");
-let inventoryTable = require("./inventoryTable.js");
-let saveTshirtDesign = require('./saveTshirtDesign.js');
+const retrieveMyData = require("./myData.js");
+const tShirtVariant = require("./tShirtVariant.js");
+const tShirtDesign = require("./listTShirtDesigns.js");
+const inventoryTable = require("./inventoryTable.js");
+const saveTshirtDesign = require('./saveTshirtDesign.js');
 
 const pages = {['myDesignsPageId']: tShirtDesign, ['createShirtPageId']: tShirtVariant, ['inventoryPageId']: inventoryTable} //ADD THESE  activeEbay, activeAll, activeEtsy, inventoryAll
 let myGlobalDataObject;

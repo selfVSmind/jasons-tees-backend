@@ -1,6 +1,6 @@
-let fs = require('fs');
-let wget = require('wget-improved');
-let exec = require('child_process').exec;
+const fs = require('fs');
+const wget = require('wget-improved');
+const exec = require('child_process').exec;
 const path = require('path');
 
 module.exports = function(blankShirtMockupDirectory, blankFileNameHashed, remoteFile, width, callbackFunction) {

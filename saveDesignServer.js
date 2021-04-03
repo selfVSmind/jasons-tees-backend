@@ -1,7 +1,7 @@
-let contentful = require('contentful-management')
-let crypto = require('crypto');
-let fullSizeMockup = require("./getMockupWithColorServer.js").fullSizeMockup
-let createEbayListing = require("./ebay/createEbayListing.js");
+const contentful = require('contentful-management')
+const crypto = require('crypto');
+const fullSizeMockup = require("./getMockupWithColorServer.js").fullSizeMockup
+const createEbayListing = require("./ebay/createEbayListing.js");
 
 const client = contentful.createClient({
 	accessToken: process.env.CONTENTFUL_MAN_TOKEN

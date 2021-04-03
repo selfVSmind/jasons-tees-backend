@@ -1,8 +1,8 @@
-let exec = require('child_process').exec;
-let crypto = require('crypto');
-let downloadFile = require('./downloadAndScaleImageFile.js');
+const exec = require('child_process').exec;
+const crypto = require('crypto');
+const downloadFile = require('./downloadAndScaleImageFile.js');
 const getContentfulEntries = require('./getContentfulEntries');
-let fs = require('fs');
+const fs = require('fs');
 const contentful = require('contentful-management');
 const path = require('path');
 
