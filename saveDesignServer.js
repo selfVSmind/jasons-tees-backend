@@ -10,7 +10,8 @@ const client = contentful.createClient({
 module.exports = function(req, res) {
   // req.body.designSpecs.variations.splice(1) //faster testing
     res.send("Processing request.");
-    uploadToContentful(req.sessionID, req.body.designSpecs.title, req.body.designSpecs.ebayTitle, "", req.body.designSpecs.theme, req.body.designSpecs.designFile.designFileId, req.body.designSpecs.variations, req.body.blankShirtArray)
+    // uploadToContentful(req.sessionID, req.body.designSpecs.title, req.body.designSpecs.ebayTitle, "", req.body.designSpecs.theme, req.body.designSpecs.designFile.designFileId, req.body.designSpecs.variations, req.body.blankShirtArray)
+    uploadToContentful(req.sessionID, req.body.designSpecs.title, req.body.designSpecs.ebayTitle, "", req.body.designSpecs.theme, req.session.keyGraphicId, req.body.designSpecs.variations, req.body.blankShirtArray)
     .then(value => {
       return createEbayListing(req.session.ebayRefreshToken, value, req.body);
     })
@@ -122,7 +123,7 @@ function getGeometry(id, shirtBlankArray) {
 function createAndUploadVariations(sessionID, variations, blankShirtArray) {
   var promiseArray = new Array();
   for(var i = 0; i < variations.length; ++i) {
-    var variantPromise = fullSizeMockup(sessionID, variations[i].blankUrl, variations[i].hexColor, getGeometry(variations[i].blankId, blankShirtArray), variations[i].variantName)
+    var variantPromise = fullSizeMockup(sessionID, variations[i].blankUrl, variations[i].htvId, variations[i].blankId, variations[i].variantName)
     promiseArray.push(variantPromise)
   };
   return promiseArray;

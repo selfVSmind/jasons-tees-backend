@@ -127,6 +127,40 @@
 <!--RESET BUTTON MODAL END-->
 
 
+<!--CHOOSE GRAPHIC MODAL BEGIN-->
+<div id="chooseKeyGraphicModal" class="modal">
+    <div class="modal-background"></div>
+        <div class="modal-card">
+        <header class="modal-card-head">
+            Delete unsaved changes and reset this page?
+        </header>
+        <section class="modal-card-body">
+            <div class="field">
+                <div class="buttons is-centered">
+                    <span class="button is-success" onClick="app.resetShirtsVariants();document.getElementById('chooseKeyGraphicModal').className = 'modal';">
+                        <span class="icon is-small">
+                            <i class="fas fa-thumbs-up"></i>
+                        </span>
+                        <span>
+                            <strong>Mhmm</strong>
+                        </span>
+                    </span>
+                    <span class="button is-danger" onClick="document.getElementById('chooseKeyGraphicModal').className = 'modal';">
+                        <span class="icon is-small">
+                            <i class="fas fa-thumbs-down"></i>
+                        </span>
+                        <span>
+                            <strong>Nah</strong>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<!--CHOOSE GRAPHIC MODAL END-->
+
+
         
         <script defer src="https://use.fontawesome.com/releases/v5.2.0/js/all.js" integrity="sha384-4oV5EgaV02iISL2ban6c/RmotsABqE4yZxZLcYMAdG7FAPsyHYAPpywE9PJo+Khy" crossorigin="anonymous"></script>
         <script type="text/javascript" src="js/bundle.js"></script>

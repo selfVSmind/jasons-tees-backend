@@ -1,5 +1,5 @@
-var wget = require('wget-improved');
-var exec = require('child_process').exec;
+let wget = require('wget-improved');
+let exec = require('child_process').exec;
 const sdk = require('contentful-management');
 const path = require('path');
 
@@ -13,23 +13,15 @@ module.exports = function(req, res) {
 	let keyGraphicFile = path.join(__dirname, 'public', 'image', 'temp', req.sessionID, 'keyGraphic.ai');
 	if(!keyGraphicFile) return;
 
-	var whereToSave = path.join(__dirname, 'public', 'image', 'temp', req.sessionID, 'keyGraphic.png');
+	let whereToSave = path.join(__dirname, 'public', 'image', 'temp', req.sessionID, 'keyGraphic.png');
 
-	// const options = {};
-	// let download = wget.download(req.query.keyGraphicUrl, whereToSave, options);
-	// download.on('error', function(err) {
-	//     console.log("Download keyGraphicFile error: "+err);
-	// });
-	// download.on('start', function(fileSize) {
-	//     // console.log(fileSize);
-	// });
-	// download.on('end', function(output) {
-	//     console.log("Download keyGraphicFile: "+output);
 	uploadToContentful(req.sessionID, req.session.tempPath)
 	.then((asset) => {
+		
+		// lets store the contentful id of the graphic file in the session so we can access it later
 		req.session.keyGraphicId = asset.sys.id;
-		console.log(JSON.stringify(req.session, null, 2));
-		var cliCommand = "convert -colorspace rgb -fill '#000000' -fuzz 100% -opaque '#7F7F7F' " + `"${keyGraphicFile}" "${whereToSave}"`;
+
+		let cliCommand = "convert -colorspace rgb -fill '#000000' -fuzz 100% -opaque '#7F7F7F' " + `"${keyGraphicFile}" "${whereToSave}"`;
 		exec(cliCommand, 
 				function (error, stdout, stderr) {
 					if(error) console.log("Convert keyGraphicFile error: "+error)
@@ -45,12 +37,6 @@ module.exports = function(req, res) {
 			} 
 			);
 	});
-
-	// });
-	// download.on('progress', function(progress) {
-	//     typeof progress === 'number'
-	//     // code to show progress bar
-	// });
 };
 
 function uploadToContentful(sessionID, tempPath) {

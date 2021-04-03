@@ -190,7 +190,7 @@ function makeVariant() {
                   </p>
                 </div>
               </div>
-              <div class="tile is-parent">
+              <div class="tile is-parent is-hidden-touch">
                 <div class="tile is-child box">
                   <p class="title is-pulled-right">Back</p>
                   <p class="image">

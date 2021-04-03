@@ -1,12 +1,12 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.app = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-var retrieveMyData = require("./myData.js");
-var tShirtVariant = require("./tShirtVariant.js");
-var tShirtDesign = require("./listTShirtDesigns.js");
-var inventoryTable = require("./inventoryTable.js");
-var saveTshirtDesign = require('./saveTshirtDesign.js');
+let retrieveMyData = require("./myData.js");
+let tShirtVariant = require("./tShirtVariant.js");
+let tShirtDesign = require("./listTShirtDesigns.js");
+let inventoryTable = require("./inventoryTable.js");
+let saveTshirtDesign = require('./saveTshirtDesign.js');
 
 const pages = {['myDesignsPageId']: tShirtDesign, ['createShirtPageId']: tShirtVariant, ['inventoryPageId']: inventoryTable} //ADD THESE  activeEbay, activeAll, activeEtsy, inventoryAll
-var myGlobalDataObject;
+let myGlobalDataObject;
 
 retrieveMyData()
 .then((globalDataObject) => {
@@ -25,13 +25,13 @@ retrieveMyData()
 document.addEventListener('DOMContentLoaded', () => {
 
   // Get all "navbar-burger" elements
-  const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+  const navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
 
   // Check if there are any navbar burgers
-  if ($navbarBurgers.length > 0) {
+  if (navbarBurgers.length > 0) {
 
   // Add a click event on each of them
-  $navbarBurgers.forEach( el => {
+  navbarBurgers.forEach( el => {
       el.addEventListener('click', () => {
 
       // Get the target from the "data-target" attribute
@@ -49,6 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.onload = () => {
+  createOktaLogo();
+  checkIfKeyGraphicExists();
+};
+
+function createOktaLogo() {
   // // just a little trick.. i don't have access to <far fa-info-circle> so foneawesome defaults it to a neat animation
   // document.getElementById("about-link-icon").className = "far fa-info-circle";
 
@@ -71,12 +76,15 @@ window.onload = () => {
     c-22.2,0-40.2-18-40.2-40.2c0-22.2,18-40.2,40.2-40.2s40.2,18,40.2,40.2C567.9,305.2,549.8,323.2,527.8,323.2z']
   });
   document.getElementById("okta-logo").className = "fac fa-okta fa-2x";
+}
 
+function checkIfKeyGraphicExists() {
   fetch('/checkKeyGraphic')
   .then(response => response.json())
   .then(response => {
+    console.log(JSON.stringify(response, null, 2));
     if(response.haveGraphic) {
-      var element = document.getElementById("keyGraphic");
+      let element = document.getElementById("keyGraphic");
       element.src = response.assetUrl+"?time="+ new Date().getTime();
     }
   })
@@ -85,7 +93,7 @@ window.onload = () => {
   });
 };
 
-var currentPage = "";
+let currentPage = "";
 
 function showPage(newPageId) {
   if(!pages.hasOwnProperty([newPageId])) return
@@ -113,19 +121,19 @@ module.exports = {
 };
 
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-}
+// window.onclick = function(event) {
+// }
 
-document.onkeydown = function(evt) {
-    evt = evt || window.event;
-    var isEscape = false;
-    if ("key" in evt) {
-        isEscape = (evt.key == "Escape" || evt.key == "Esc");
+document.onkeydown = function(event) {
+    event = event || window.event;
+    let isEscape = false;
+    if ("key" in event) {
+        isEscape = (event.key == "Escape" || event.key == "Esc");
     } else {
-        isEscape = (evt.keyCode == 27);
+        isEscape = (event.keyCode == 27);
     }
     if (isEscape) {
-      var modal = document.getElementById("resetShirtVariantsModal")
+      let modal = document.getElementById("resetShirtVariantsModal")
       if(modal.className == "modal is-active") {
         modal.className = "modal";
       }
@@ -805,7 +813,7 @@ function makeVariant() {
                   </p>
                 </div>
               </div>
-              <div class="tile is-parent">
+              <div class="tile is-parent is-hidden-touch">
                 <div class="tile is-child box">
                   <p class="title is-pulled-right">Back</p>
                   <p class="image">

@@ -87,7 +87,7 @@ const app = express();
 app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
 
 
-cookieAndSessionTimeToLive = 1000*60*60*24;
+cookieAndSessionTimeToLive = 1000*60*60*24*10; // ten days
 
 var FileStore = require('session-file-store')(session);
 var fileStoreOptions = {
