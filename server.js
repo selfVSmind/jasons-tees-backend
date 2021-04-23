@@ -1,5 +1,7 @@
 const express = require('express');
+const compression = require('compression');
 const redirectToHTTPS = require('express-http-to-https').redirectToHTTPS;
+const cors = require('cors');
 const session = require('express-session');
 const mustacheExpress = require('mustache-express');
 const path = require('path');
@@ -16,7 +18,7 @@ require('body-parser-xml')(bodyParser);
 const downloadKeyGraphicFile = require('./downloadKeyGraphicFile');
 const getMockupWithColor = require('./getMockupWithColorServer').ajax;
 const saveDesign = require('./saveDesignServer.js');
-const getContentfulEntries = require('./getContentfulEntries').sendToClient;
+const getContentfulEntries = require('./getContentfulEntries');
 const exchangeEbayCodeForRefreshToken = require('./ebay/exchangeCodeForEbayRefreshToken.js');
 
 // let contentfulEntries;
@@ -35,16 +37,24 @@ const exchangeEbayCodeForRefreshToken = require('./ebay/exchangeCodeForEbayRefre
 const templateDir = path.join(__dirname, '.', 'views');
 
 // Static PUBLICLY AVAILABLE directories
+const newVersionDir = path.join(__dirname, '.', 'new-version', 'dist', 'new-version');
 const cssDir = path.join(__dirname, '.', 'public', 'css');
 const jsDir = path.join(__dirname, '.', 'public', 'js');
 const imageDir = path.join(__dirname, '.', 'public', 'image');
 const publicUploadsDir = path.join(__dirname, '.', 'uploads');
+const wellKnownDir = path.join(__dirname, '.', 'public', '.well-known', 'acme-challenge');
 
 // HTTPS Certificate stuffs
 const credentials = {
   key: fs.readFileSync(process.env.SSL_PRIVKEY, 'utf8'),
   cert: fs.readFileSync(process.env.SSL_CERT, 'utf8'),
   ca: fs.readFileSync(process.env.SSL_CHAIN, 'utf8')
+};
+
+// I'm testing out the new Angular build at the moment, remove CORS after moving to production
+const corsOptions = {
+  origin: 'http://localhost:4200',
+  optionsSuccessStatus: 200
 };
 
 const storage = multer.diskStorage({
@@ -61,27 +71,29 @@ const upload = multer({ storage });
 
 var ISSUER = process.env.OKTA_ISSUER;
 
-const oidc = new ExpressOIDC(Object.assign({
-  issuer: process.env.OKTA_ISSUER,
-  client_id: process.env.OKTA_CLIENT_ID,
-  client_secret: process.env.OKTA_CLIENT_SECRET,
-  appBaseUrl: process.env.OKTA_APP_BASE_URL,
-  scope: 'openid profile email',
-  routes: {
-    login: {
-      viewHandler: (req, res) => {
-        const baseUrl = url.parse(ISSUER).protocol + '//' + url.parse(ISSUER).host;
-        // Render your custom login page, you must create this view for your application and use the Okta Sign-In Widget
-        res.render('login', {
-          csrfToken: req.csrfToken(),
-          baseUrl: baseUrl
-        });
-      }
-    }
-  }
-}));
+// const oidc = new ExpressOIDC(Object.assign({
+//   issuer: process.env.OKTA_ISSUER,
+//   client_id: process.env.OKTA_CLIENT_ID,
+//   client_secret: process.env.OKTA_CLIENT_SECRET,
+//   appBaseUrl: process.env.OKTA_APP_BASE_URL,
+//   scope: 'openid profile email',
+//   routes: {
+//     login: {
+//       viewHandler: (req, res) => {
+//         const baseUrl = url.parse(ISSUER).protocol + '//' + url.parse(ISSUER).host;
+//         // Render your custom login page, you must create this view for your application and use the Okta Sign-In Widget
+//         res.render('login', {
+//           csrfToken: req.csrfToken(),
+//           baseUrl: baseUrl
+//         });
+//       }
+//     }
+//   }
+// }));
 
 const app = express();
+
+app.use(compression());
 
 // Redirect to a secure connection if needed
 app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
@@ -107,18 +119,20 @@ app.use(session({
   saveUninitialized: false
 }));
 
+app.use('/', express.static(newVersionDir));
 app.use('/css', express.static(cssDir));
 app.use('/js', express.static(jsDir));
 app.use('/image', express.static(imageDir));
 app.use('/uploads', express.static(publicUploadsDir));
+app.use('/.well-known/acme-challenge', express.static(wellKnownDir));
 
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', templateDir);
 
-app.use(oidc.router);
+// app.use(oidc.router);
 
-app.get('/', (req, res) => {
+app.get('/old-version', (req, res) => {
   let tempPath = path.join(__dirname, '.', 'public', 'image', 'temp', req.sessionID);
   if(!fs.existsSync(tempPath)) fs.mkdirSync(tempPath);
   req.session.tempPath = tempPath;
@@ -130,6 +144,12 @@ app.get('/', (req, res) => {
     isEbayAuthenticated: !!req.session.ebayRefreshToken,
     userinfo: userinfo
   });
+});
+
+app.get('/', (req, res) => {
+  let tempPath = path.join(__dirname, '.', 'public', 'image', 'temp', req.sessionID);
+  if(!fs.existsSync(tempPath)) fs.mkdirSync(tempPath);
+  req.session.tempPath = tempPath;
 });
 
 // app.get('/profile', oidc.ensureAuthenticated(), (req, res) => {
@@ -151,18 +171,19 @@ app.use(bodyParser.urlencoded({
 
 app.post('/downloadKeyGraphicFile', downloadKeyGraphicFile);
 app.post('/getMockupWithColor', getMockupWithColor);
-app.get('/getContentfulEntries', getContentfulEntries);
-app.post('/saveDesign', oidc.ensureAuthenticated(), saveDesign);
+app.get('/getContentfulEntries', cors(corsOptions), getContentfulEntries.sendToClient);
+app.get('/getTshirtBlankData', cors(corsOptions), getContentfulEntries.getTshirtBlankData);
+// app.post('/saveDesign', oidc.ensureAuthenticated(), saveDesign);
 
-app.get('/ebay/accepted', oidc.ensureAuthenticated(), function(req, res) {
-  let ebayAuthCode;
-  if(req.query.code) ebayAuthCode = req.query.code;
-  exchangeEbayCodeForRefreshToken(ebayAuthCode)
-  .then((refreshToken) => {
-    req.session.ebayRefreshToken = refreshToken;
-    res.redirect('/');
-  });
-});
+// app.get('/ebay/accepted', oidc.ensureAuthenticated(), function(req, res) {
+//   let ebayAuthCode;
+//   if(req.query.code) ebayAuthCode = req.query.code;
+//   exchangeEbayCodeForRefreshToken(ebayAuthCode)
+//   .then((refreshToken) => {
+//     req.session.ebayRefreshToken = refreshToken;
+//     res.redirect('/');
+//   });
+// });
 
 app.get('/checkKeyGraphic', (req, res) => {
   if(fs.existsSync(path.join(__dirname, 'public', 'image', 'temp', req.sessionID, "keyGraphic.png"))) res.json({haveGraphic: true, assetUrl: "image/temp/"+req.sessionID+"/keyGraphic.png"});
@@ -179,7 +200,13 @@ app.post('/upload', upload.single('photo'), (req, res) => {
   // return res.json(req.file.path);
 });
 
-oidc.on('ready', () => {
+// The next one need to stay at the bottom of the list
+// This lets Angular handle the routing client side
+app.get('/*', function(req, res) { 
+  res.sendFile(path.join(__dirname, '.', 'new-version', 'dist', 'new-version', 'index.html'));
+});
+
+// oidc.on('ready', () => {
   // Starting both http & https servers
   const httpServer = http.createServer(app);
   const httpsServer = https.createServer(credentials, app);
@@ -195,13 +222,13 @@ oidc.on('ready', () => {
   httpsServer.listen(HTTPS_PORT, () => {
     console.log(`HTTP Server running on port ${HTTPS_PORT}`);
   });
-});
+// });
 
-oidc.on('error', err => {
-  // An error occurred with OIDC
-  // eslint-disable-next-line no-console
-  console.error('OIDC ERROR: ', err);
+// oidc.on('error', err => {
+//   // An error occurred with OIDC
+//   // eslint-disable-next-line no-console
+//   console.error('OIDC ERROR: ', err);
 
-  // Throwing an error will terminate the server process
-  // throw err;
-});
+//   // Throwing an error will terminate the server process
+//   // throw err;
+// });
