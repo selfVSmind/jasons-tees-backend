@@ -10,6 +10,10 @@ The actual web server is a NodeJS program running Express.
 
 ## Front End Technology
 
+### Original Javascript Version
+
 The client side Javascript file for [the original front end](https://t-shirts.jasonlambert.io/old-version) is built on NodeJS and converted for the browser on the back end using Browserify.
 
-I had a hankering to learn Angular recently, so I rebuilt the entire front end in Angular. It is still a work in progress, but you can see that [here](https://t-shirts.jasonlambert.io).
+### New Angular Version
+
+I had a hankering to learn Angular recently, so I rebuilt the entire front end in Angular. It is still a work in progress, but you can see that [here](https://github.com/selfVSmind/new-tshirt-ebay-lister).
