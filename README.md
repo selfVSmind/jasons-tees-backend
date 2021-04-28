@@ -1,6 +1,8 @@
 # [![Jason's Tees](public/image/jasons-tees-logo.png)](https://t-shirts.jasonlambert.io)
 
-This is a very custom ebay listing tool that I built for myself. Getting everything set up for a new t-shirt listing on ebay was just painful and slow using their standard website, so I dreamed up this app that would allow me to make new listings in a matter of seconds.
+This is a custom Ebay listing tool that I built for my narrow use case. Getting everything set up for a new t-shirt listing on ebay was just painful and slow using their standard website, so I dreamed up this app that would allow me to make new listings in a matter of seconds.
+
+I use Adobe Illustrator to create my custom graphics and an Illustrator plug-in to cut out the design on heat transfer vinyl. With this tool, I am able to upload my Illustrator files directly, make a few color choices, and upload everything to Ebay in just a few clicks!
 
 ## Back End Technology
 
