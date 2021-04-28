@@ -6,8 +6,10 @@ This is a very custom ebay listing tool that I built for myself. Getting everyth
 
 On the back end, this web app makes use of Image Magick to convert Adobe Illustrator files into a PNG with transparency. The result is then overlayed onto a stock photo of a blank t-shirt.
 
+The actual web server is a NodeJS program running Express.
+
 ## Front End Technology
 
 The client side Javascript file for [the original front end](https://t-shirts.jasonlambert.io/old-version) is built on NodeJS and converted for the browser on the back end using Browserify.
 
-I had a hankering to learn Angular recently, so I rebuilt the entire front end in Angular. You can see that [here](https://t-shirts.jasonlambert.io).
+I had a hankering to learn Angular recently, so I rebuilt the entire front end in Angular. It is still a work in progress, but you can see that [here](https://t-shirts.jasonlambert.io).
