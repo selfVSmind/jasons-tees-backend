@@ -1,4 +1,5 @@
 const contentful = require('contentful');
+const generateCutFileImage = require('./generateCutFileImage.js');
 
 const client = contentful.createClient({
 	space: process.env.CONTENTFUL_SPACE_ID,
@@ -63,11 +64,27 @@ client.getEntries()
 	  });
 });
 
-function getModel(modelId) {
+getModel = (modelId) => {
 	// contentfulEntries.items.forEach
 }
 
-function getTshirtBlankData(req, res) {
+getHtvData = (req, res) => {
+	let htvData = { data: [] };
+	contentfulEntries.items.forEach(entry => {
+		if(entry.sys.contentType.sys.id == "heatTransferVinyl") {
+			htvData.data.push({
+				id: entry.sys.id,
+				brandName: entry.fields.brandName,
+				color: entry.fields.color,
+				pantoneEquivalentValue: entry.fields.pantoneEquivalentValue,
+				htvType: entry.fields.htvType
+			});
+		}
+	});
+	res.json(htvData);
+};
+
+getTshirtBlankData = (req, res) => {
 	let blankData = { data: [] };
 	contentfulEntries.items.forEach(entry => {
 		if(entry.sys.contentType.sys.id == "tShirtBlank") {
@@ -95,8 +112,36 @@ function getTshirtBlankData(req, res) {
 	res.json(blankData);
 };
 
+getCncCutFileImage = (cncCutFileId) => {
+	let returnValue;
+	contentfulEntries.items.forEach(entry => {
+		if(entry.sys.id == cncCutFileId) {
+			returnValue = generateCutFileImage(entry.sys.id, 'https:' + entry.fields.file.fields.file.url);
+		}
+	});
+	return returnValue;
+};
+
+getCncCutFileData = (req, res) => {
+	let cutFileData = { data: [] };
+	contentfulEntries.items.forEach(entry => {
+		if(entry.sys.contentType.sys.id == "cncCutFile") {
+			console.log(JSON.stringify(entry, null, 2));
+			cutFileData.data.push({
+				id: entry.sys.id,
+				name: entry.fields.designName,
+				imgUrl: generateCutFileImage(entry.sys.id, 'https:' + entry.fields.file.fields.file.url)
+			});
+		}
+	});
+	res.json(cutFileData);
+};
+
 module.exports = {
+	getCncCutFileImage: getCncCutFileImage,
 	getTshirtBlankData: getTshirtBlankData,
+	getCncCutFileData: getCncCutFileData,
+	getHtvData: getHtvData,
 	hexFromId: function(vinylModelId) {
 		console.log(vinylModelId);		// make sure no one is trying to inject nasty text before we execute our CLI command
 		let found = false;

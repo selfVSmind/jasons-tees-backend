@@ -7,7 +7,7 @@ const contentful = require('contentful-management');
 const path = require('path');
 
 const getExtRegex = /(?:\.([^.]+))?$/;
-const scaleToWidth = 208;
+const scaleToWidth = 400;
 
 const BLANK_SHIRT_IMAGE_DIRECTORY = path.join(__dirname, '.', 'public', 'image', 'blanks');
 
@@ -19,12 +19,50 @@ const client = contentful.createClient({
 })
 const SPACE_ID = process.env.CONTENTFUL_SPACE_ID;
 
+setSessionKeyGraphic = (cncCutFileId, session, sessionID) => {
+    session.keyGraphicId = cncCutFileId;
+    let keyGraphicPath = path.join(__dirname, '.', 'public', getContentfulEntries.getCncCutFileImage(cncCutFileId));
+    let sessionPathToKeyGraphicPng = path.join(__dirname, 'public', 'image', 'temp', sessionID, 'keyGraphic.png');
+
+    fs.copyFileSync(keyGraphicPath, sessionPathToKeyGraphicPng);
+
+};
+
 module.exports = {
+
+//     newAjax: function(req, res) {
+//         let tShirtModelId = req.body.hasOwnProperty('tShirtModelId') ? req.body.tShirtModelId : req.query.tShirtModelId;
+//         let vinylModelId = req.body.hasOwnProperty('vinylModelId') ? req.body.vinylModelId : req.query.vinylModelId;
+//         let cncCutFileId;
+
+// console.log(JSON.stringify(req.body, null, 2));
+
+//         if(req.body.hasOwnProperty('cncCutFileId')) {
+//             cncCutFileId = req.body.cncCutFileId;
+//             if(req.session.keyGraphicId != cncCutFileId) {
+//                 setSessionKeyGraphic(cncCutFileId, req.session, req.sessionID);
+//             }
+//         };
+
+//         res.json(req.session);
+//     },
     //the ajax function here is called when you use the color dropdowns on the site and you can see the picture update in real time
     ajax: function(req, res) {
 
+        let tShirtModelId = req.body.hasOwnProperty('tShirtModelId') ? req.body.tShirtModelId : req.query.tShirtModelId;
+        let vinylModelId = req.body.hasOwnProperty('vinylModelId') ? req.body.vinylModelId : req.query.vinylModelId;
+        let cncCutFileId;
+
+        if(req.body.hasOwnProperty('cncCutFileId')) {
+            cncCutFileId = req.body.cncCutFileId;
+            if(req.session.keyGraphicId != cncCutFileId) {
+                setSessionKeyGraphic(cncCutFileId, req.session, req.sessionID);
+            }
+        };
+
         // let sessionDirectory = path.join(__dirname, '.', 'public', 'image', 'temp', req.sessionID);
         let sessionDirectory = req.session.tempPath;
+        console.log(sessionDirectory);
         // let KEY_GRAPHIC_LOCAL_PNG = PUBLIC_HTML_PATH + "/image/temp/workingdesign/keyGraphic.png"
         // let OUTPUT_DIRECTORY = PUBLIC_HTML_PATH + "/image/temp/workingdesign/theMockups/"
         // let PUBLIC_OUTPUT_DIRECTORY = "image/temp/workingdesign/theMockups/"
@@ -32,16 +70,16 @@ module.exports = {
 
         try {
             // let blankFileName = req.query.shirtBlankFrontPicUrl.split('/').pop()
-            let shirtBlankFrontPicUrl = getContentfulEntries.blankUrlFromId(req.query.tShirtModelId);
-            let hexColor = getContentfulEntries.hexFromId(req.query.vinylModelId)
+            let shirtBlankFrontPicUrl = getContentfulEntries.blankUrlFromId(tShirtModelId);
+            let hexColor = getContentfulEntries.hexFromId(vinylModelId)
             let blankFileName = shirtBlankFrontPicUrl.split('/').pop()
             let blankFileNameExt = getExtRegex.exec(blankFileName)[1];   
             let blankHash = crypto.createHash('md5').update(blankFileName).digest('hex');
             let blankFileNameHashed = blankHash + "." + blankFileNameExt
             //and finally
             let blankFileLocal = path.join(BLANK_SHIRT_IMAGE_DIRECTORY, blankFileNameHashed);
-            
-            downloadFile(BLANK_SHIRT_IMAGE_DIRECTORY, blankFileNameHashed, shirtBlankFrontPicUrl, scaleToWidth, afterDownloadAjax(req.sessionID, hexColor, res, blankHash, blankFileNameHashed, '70x70+70+70', sessionDirectory))
+
+            downloadFile(BLANK_SHIRT_IMAGE_DIRECTORY, blankFileNameHashed, shirtBlankFrontPicUrl, scaleToWidth, afterDownloadAjax(req.sessionID, hexColor, res, blankHash, blankFileNameHashed, '133x133+133+133', sessionDirectory))
         } catch(error) {
             console.log(error.message);
             res.json({msg: "you playing games with my heart? unknown id from either tshirtblank or vinyl."});
@@ -151,13 +189,13 @@ function afterDownloadAjax(sessionID, hexColor, res, blankHash, blankFileNameHas
 function makeTheFinalScaledDownPicYo(sessionID, res, publicOutputFile, blankFileNameHashed, geometry, sessionDirectory) {
     let colorizedGraphic = path.join(sessionDirectory, "keyGraphicWithColor.png");
     let mockupPng = path.join(sessionDirectory, "mockup.png");
-    let cliCommand = process.env.FREDS_SCRIPT_PATH + " -r "+geometry+" " + colorizedGraphic + " " + PUBLIC_HTML_PATH + "/image/blanks/scaled/208x"+blankFileNameHashed+" " + mockupPng;
+    let cliCommand = process.env.FREDS_SCRIPT_PATH + " -r "+geometry+" " + colorizedGraphic + " " + PUBLIC_HTML_PATH + "/image/blanks/scaled/"+scaleToWidth+"x"+blankFileNameHashed+" " + mockupPng;
     exec(cliCommand, 
         function (error, stdout, stderr) {
             if(error) console.log(error)
             // This callback is invoked once the child terminates
             // You'd want to check err/stderr as well!
-			res.send("image/temp/"+sessionID+"/mockup.png")
+			res.json({mockupUrl: "image/temp/"+sessionID+"/mockup.png?time="+Date.now()})
             if(stdout) console.log(stdout)
       } 
     );

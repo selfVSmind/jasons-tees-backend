@@ -39,6 +39,7 @@ function scale(blankShirtMockupDirectory, blankFileNameHashed, width, callbackFu
         }
     } catch(e) {
         let cliCommand = "convert -resize " + width + "x " + blankShirtMockupDirectory + '/' + blankFileNameHashed + " " + scaledFileName
+        // let cliCommand = "cp " + blankShirtMockupDirectory + '/' + blankFileNameHashed + " " + scaledFileName
         exec(cliCommand, 
             function (error, stdout, stderr) {
         	console.log(cliCommand)

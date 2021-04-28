@@ -16,7 +16,7 @@ const bodyParser = require('body-parser')
 require('body-parser-xml')(bodyParser);
 
 const downloadKeyGraphicFile = require('./downloadKeyGraphicFile');
-const getMockupWithColor = require('./getMockupWithColorServer').ajax;
+const getMockupWithColor = require('./getMockupWithColorServer');
 const saveDesign = require('./saveDesignServer.js');
 const getContentfulEntries = require('./getContentfulEntries');
 const exchangeEbayCodeForRefreshToken = require('./ebay/exchangeCodeForEbayRefreshToken.js');
@@ -54,7 +54,9 @@ const credentials = {
 // I'm testing out the new Angular build at the moment, remove CORS after moving to production
 const corsOptions = {
   origin: 'http://localhost:4200',
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  methods: 'GET, POST',
+  preflightContinue: false
 };
 
 const storage = multer.diskStorage({
@@ -170,9 +172,28 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.post('/downloadKeyGraphicFile', downloadKeyGraphicFile);
-app.post('/getMockupWithColor', getMockupWithColor);
+
+// note to self.... look into this options method
+app.options('/newGetMockupWithColor', function (req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+  res.setHeader('Access-Control-Allow-Methods', 'POST');
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.end();
+});
+app.post('/newGetMockupWithColor', cors(corsOptions), (req, res, next) => {
+  let tempPath = path.join(__dirname, '.', 'public', 'image', 'temp', req.sessionID);
+  if(!fs.existsSync(tempPath)) fs.mkdirSync(tempPath);
+  req.session.tempPath = tempPath;
+  next();
+}, getMockupWithColor.ajax);
+
+app.post('/getMockupWithColor', getMockupWithColor.ajax);
 app.get('/getContentfulEntries', cors(corsOptions), getContentfulEntries.sendToClient);
 app.get('/getTshirtBlankData', cors(corsOptions), getContentfulEntries.getTshirtBlankData);
+app.get('/getCncCutFileData', cors(corsOptions), getContentfulEntries.getCncCutFileData);
+app.get('/getHtvData', cors(corsOptions), getContentfulEntries.getHtvData);
+
+
 // app.post('/saveDesign', oidc.ensureAuthenticated(), saveDesign);
 
 // app.get('/ebay/accepted', oidc.ensureAuthenticated(), function(req, res) {
@@ -202,7 +223,11 @@ app.post('/upload', upload.single('photo'), (req, res) => {
 
 // The next one need to stay at the bottom of the list
 // This lets Angular handle the routing client side
-app.get('/*', function(req, res) { 
+app.get('/*', function(req, res) {
+  let tempPath = path.join(__dirname, '.', 'public', 'image', 'temp', req.sessionID);
+  if(!fs.existsSync(tempPath)) fs.mkdirSync(tempPath);
+  req.session.tempPath = tempPath;
+
   res.sendFile(path.join(__dirname, '.', 'new-version', 'dist', 'new-version', 'index.html'));
 });
 

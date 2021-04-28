@@ -170,7 +170,8 @@ function post(url, callback, pictureToUpdate, assetId, hiddenElement) {
     request(options, function(error, response, body) {
         if(error) console.log('error:', error); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        callback(body + "?time=" + new Date().getTime(), pictureToUpdate, assetId, hiddenElement)
+        // callback(body + "?time=" + new Date().getTime(), pictureToUpdate, assetId, hiddenElement)
+        callback(JSON.parse(body).mockupUrl, pictureToUpdate, assetId, hiddenElement);
     });
 }
 
