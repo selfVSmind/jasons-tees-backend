@@ -1,4 +1,4 @@
-# [![Jason's Tees](public/image/jasons-tees-logo.png)](https://t-shirts.jasonlambert.io)
+# ![Jason's Tees](public/image/jasons-tees-logo.png)
 
 This is a custom Ebay listing tool that I built for my narrow use case. Getting everything set up for a new t-shirt listing on ebay was just painful and slow using their standard website, so I dreamed up this app that would allow me to make new listings in a matter of seconds.
 
