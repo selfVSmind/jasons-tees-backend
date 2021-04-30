@@ -194,17 +194,17 @@ app.get('/getCncCutFileData', cors(corsOptions), getContentfulEntries.getCncCutF
 app.get('/getHtvData', cors(corsOptions), getContentfulEntries.getHtvData);
 
 
-// app.post('/saveDesign', oidc.ensureAuthenticated(), saveDesign);
+app.post('/saveDesign', saveDesign);
 
-// app.get('/ebay/accepted', oidc.ensureAuthenticated(), function(req, res) {
-//   let ebayAuthCode;
-//   if(req.query.code) ebayAuthCode = req.query.code;
-//   exchangeEbayCodeForRefreshToken(ebayAuthCode)
-//   .then((refreshToken) => {
-//     req.session.ebayRefreshToken = refreshToken;
-//     res.redirect('/');
-//   });
-// });
+app.get('/ebay/accepted', function(req, res) {
+  let ebayAuthCode;
+  if(req.query.code) ebayAuthCode = req.query.code;
+  exchangeEbayCodeForRefreshToken(ebayAuthCode)
+  .then((refreshToken) => {
+    req.session.ebayRefreshToken = refreshToken;
+    res.redirect('/old-version');
+  });
+});
 
 app.get('/checkKeyGraphic', (req, res) => {
   if(fs.existsSync(path.join(__dirname, 'public', 'image', 'temp', req.sessionID, "keyGraphic.png"))) res.json({haveGraphic: true, assetUrl: "image/temp/"+req.sessionID+"/keyGraphic.png"});

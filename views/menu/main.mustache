@@ -31,37 +31,6 @@
                 {{>menu/reorder}}
                 {{>menu/about}}
             </div>
-            <div class="navbar-end">
-                {{^isLoggedIn}}
-                <div class="navbar-item">
-                    Demo Mode
-                </div>
-                <div class="navbar-item">
-                    <div class="buttons">
-                        <a class="button" href="login">
-                            <strong>Sign In</strong>
-                        </a>
-                        <a class="button is-info" href="login">
-                            <strong>Sign Up</strong>
-                        </a>
-                    </div>
-                </div>
-                {{/isLoggedIn}}
-                {{#isLoggedIn}}
-                <div class="navbar-item">
-                    Hello {{userinfo.given_name}}!
-                </div>
-                <div class="navbar-item">
-                    <div class="buttons">
-                        <form method="POST" action="/logout">
-                            <button class="button">
-                                Log Out
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                {{/isLoggedIn}}
-            </div>
         </div>
         <!--END NAVMENUTSHIRTS-->
     {{! </div> }}

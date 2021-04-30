@@ -5,7 +5,7 @@
   "main": "app.js",
   "author": "selfVSmind",
   "dependencies": {
-    "@okta/jwt-verifier": "^1.0.0",
+    "@okta/jwt-verifier": "^2.1.0",
     "@okta/oidc-middleware": "^4.0.3",
     "async": "^2.6.1",
     "boilerplate-javascript": "file:contentful",
